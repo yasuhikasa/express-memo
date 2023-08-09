@@ -42,3 +42,23 @@ module.exports = router;
 // });
 
 // module.exports = router;
+
+
+//モバイルアプリの場合
+// var express = require('express');
+// var router = express.Router();
+
+// // カスタムヘッダーを一時的に保存する変数
+// let customHeaderValue = null;
+
+// router.get('/sendHeader', (req, res) => {
+//   customHeaderValue = req.headers['app-type'];
+//   res.send('Header received');
+// });
+
+// // Bアプリ用のエンドポイント
+// router.get('/receiveHeader', (req, res) => {
+//   res.send(customHeaderValue);
+// });
+
+// module.exports = router;
