@@ -108,9 +108,7 @@
 
 
 
-
-
-
+// // getの例
 // export const getAirconProperties: RequestHandler = async (req, res, next) => {
 //   try {
 //     const redis = ioRedis.getRedisInstance();
@@ -148,5 +146,111 @@
 //     } else {
 //       next(_.createError(`${err}`, 4001, 500));
 //     }
+//   }
+// };
+
+
+
+
+
+// // postの例
+// export const postDevice: RequestHandler = async (req, res, next) => {
+//   try {
+//   const redis = ioRedis.getRedisInstance();
+  
+//   // 要求生成
+//   const reqField = {
+//       reqType: "postDevice",  // これが新しいデバイスを登録する指示になる
+//       deviceData: req.body,　// 前提として、リクエストボディにデバイス情報が含まれている
+//       srcModule: def.SOURCE_MODULE,
+//       reqId: _.createReqNumber(),
+//   };
+  
+//   // 要求をPUSH
+//   await redis.rpush(def.REQ_KEY, JSON.stringify(reqField));
+  
+//   // 応答をPOP
+//   const resKey = def.RES_KEY + reqField.reqId;
+//   const data = await ioRedis.blpopWithTimeout(resKey, def.TIMEOUT_20);
+  
+//   // データの処理、エラーハンドリング等（略）
+  
+//   // 正常応答
+//   .wrapResJson(req, res, data);
+//   } catch (err) {
+//   // エラーハンドリング（略）
+//   }
+//   };
+
+//   req.bodyはHTTPリクエストのボディ部分を取得するもので、その内容は通常JSON形式でクライアントから送られてきます。
+//   このdeviceData: req.bodyの部分で、そのJSONデータをdeviceDataフィールドに設定しています。
+
+//   ミドルウェア側では、このdeviceDataフィールドを解析し、データベースに対する適切な操作（挿入、更新、削除など）を行います。
+//   具体的な操作はreqTypeフィールドに依存する場合が多く、このフィールドによって何をすべきかが指示されます。
+  
+//   例えば、reqTypeが"registerDevice"であれば、新規デバイス登録が行われ、
+//   reqTypeが"updateDevice"であれば、既存のデバイス情報の更新が行われる、といった具体的な処理がミドルウェア側で定義されています。
+
+
+
+// // putの例
+// export const updateDevice: RequestHandler = async (req, res, next) => {
+//   try {
+//       const redis = ioRedis.getRedisInstance();
+      
+//       // デバイス更新の要求を生成
+//       const reqField = {
+//           reqType: "updateDevice",
+//           deviceId: req.params.id,  // 前提として、URLパラメータにデバイスIDが含まれている
+//           updateData: req.body,  // リクエストボディに更新するデータが含まれている
+//           srcModule: def.SOURCE_MODULE,
+//           reqId: _.createReqNumber(),
+//       };
+      
+//       // 要求をPUSH
+//       await redis.rpush(def.REQ_KEY, JSON.stringify(reqField));
+      
+//       // 応答をPOP
+//       const resKey = def.RES_KEY + reqField.reqId;
+//       const data = await ioRedis.blpopWithTimeout(resKey, def.TIMEOUT_20);
+      
+//       // データの処理、エラーハンドリング等（略）
+      
+//       // 正常応答
+//       res.status(200).json(data);  // 200 OK
+//   } catch (err) {
+//       // エラーハンドリング（略）
+//   }
+// };
+
+
+
+
+// // deleteの例
+// export const deleteDevice: RequestHandler = async (req, res, next) => {
+//   try {
+//       const redis = ioRedis.getRedisInstance();
+
+//       // デバイス削除の要求を生成
+//       const reqField = {
+//           reqType: "deleteDevice",
+//           deviceId: req.params.id,  // 前提として、URLパラメータにデバイスIDが含まれている
+//           srcModule: def.SOURCE_MODULE,
+//           reqId: _.createReqNumber(),
+//       };
+      
+//       // 要求をPUSH
+//       await redis.rpush(def.REQ_KEY, JSON.stringify(reqField));
+      
+//       // 応答をPOP
+//       const resKey = def.RES_KEY + reqField.reqId;
+//       const data = await ioRedis.blpopWithTimeout(resKey, def.TIMEOUT_20);
+      
+//       // データの処理、エラーハンドリング等（略）
+      
+//       // 正常応答
+//       res.status(204).send();  // 204 No Content
+//   } catch (err) {
+//       // エラーハンドリング（略）
 //   }
 // };
