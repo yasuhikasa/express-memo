@@ -1,23 +1,66 @@
-// /**
-//  * エアコンプロパティ取得APIの応答情報生成
-//  * @method convertGetAirconPropertiesRes
-//  * @param {AirconPropertyResponse} obj Redisから取得した応答データ
-//  * @returns {object} API応答オブジェクト
-//  */
-// const convertGetAirconPropertiesRes = (obj: AirconPropertyResponse) => {
-//   const convertedObj: any = {};
+// // 入力データの型定義
+// interface AirconPropertyResponse {
+//   status: number;
+//   aircon_property_scope_list: Array<{
+//     detailed_device_type: string;
+//     modes: Array<{
+//       operation_mode: number;
+//       temperature_min?: number;
+//       temperature_max?: number;
+//       temperature_setting?: boolean;
+//       air_flow_level_setting?: boolean;
+//       humidication_mode?: boolean;
+//     }>;
+//     air_flow_level: {
+//       air_flow_level_min: number;
+//       air_flow_level_max: number;
+//     };
+//     flow_direction_V: {
+//       flow_direction_V_min: number;
+//       flow_direction_V_max: number;
+//     };
+//     flow_direction_V_setting: boolean;
+//     power_saving_operation_setting: boolean;
+//   }>;
+// }
 
-//   // statusプロパティが存在する場合はそのまま代入する
+// // 出力データの型定義
+// interface ConvertedAirconProperties {
+//   status?: number;
+//   AirconPropertyScopeList?: Array<{
+//     DetailedDeviceType: string;
+//     Modes: Array<{
+//       OperationMode: number;
+//       TemperatureMin?: number;
+//       TemperatureMax?: number;
+//       TemperatureSetting?: boolean;
+//       AirFlowLevelSetting?: boolean;
+//       HumidicationMode?: boolean;
+//     }>;
+//     AirFlowLevel: {
+//       AirFlowLevelMin: number;
+//       AirFlowLevelMax: number;
+//     };
+//     FlowDirectionV: {
+//       FlowDirectionVMin: number;
+//       FlowDirectionVMax: number;
+//     };
+//     FlowDirectionVSetting: boolean;
+//     PowerSavingOperationSetting: boolean;
+//   }>;
+// }
+
+// // 関数の定義
+// const convertGetAirconPropertiesRes = (obj: AirconPropertyResponse): ConvertedAirconProperties => {
+//   const convertedObj: ConvertedAirconProperties = {};
+
 //   if (obj.status !== undefined) {
 //     convertedObj.status = obj.status;
 //   }
 
-//   // aircon_property_scope_listが存在する場合
 //   if (Array.isArray(obj.aircon_property_scope_list)) {
 //     convertedObj.AirconPropertyScopeList = obj.aircon_property_scope_list.map((scope) => {
 //       const convertedScope: any = {};
-
-//       // キー名をAPI応答用に置き換える
 //       convertedScope.DetailedDeviceType = scope.detailed_device_type;
 
 //       if (Array.isArray(scope.modes)) {
