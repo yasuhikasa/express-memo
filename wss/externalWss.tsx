@@ -207,97 +207,141 @@ return wss
 // wsNotify 関数は、通知が受け取られるたびに自身を再帰的に呼び出し、継続的にRedisの通知を監視します。通知が受け取られると、formatNotification 関数を使用して通知データを成形し、全ての接続されているクライアントに送信します。
 
 
-// 他の依存関係のインポート...
-import IORedis from "ioredis";
+// // 他の依存関係のインポート...
+// import IORedis from "ioredis";
 
-const redisPort = 6379;
-const redisAddress = "redis";
-const redis = new IORedis(redisPort, redisAddress);
+// const redisPort = 6379;
+// const redisAddress = "redis";
+// const redis = new IORedis(redisPort, redisAddress);
 
-export const internalWssConnection = (server: http.Server) => {
-  const wss = new websocket.Server({ server: server });
+// export const internalWssConnection = (server: http.Server) => {
+//   const wss = new websocket.Server({ server: server });
 
-  // ...他の設定やハンドラ...
+//   // ...他の設定やハンドラ...
 
-  // 成形関数 (適切にカスタマイズする必要があります)
-  const formatNotification = (data: any) => {
-    switch(data.type) {
-      case 'equipment_property':
-        // 機器プロパティの通知を成形
-        return {
-          type: 'Equipment Property',
-          // ...他の成形ロジック
-        };
-      case 'equipment_registration':
-        // 機器登録情報の通知を成形
-        return {
-          type: 'Equipment Registration',
-          // ...他の成形ロジック
-        };
-      case 'history_data':
-        // 履歴データの通知を成形
-        return {
-          type: 'History Data',
-          // ...他の成形ロジック
-        };
-      default:
-        // 不明な通知タイプの場合は、エラーログを出力して、通知を無視するか、基本的な成形を提供します。
-        console.error('Unknown notification type:', data.type);
-        return null;  // または基本的な成形
-    }
-  };
+//   // 成形関数 (適切にカスタマイズする必要があります)
+//   const formatNotification = (data: any) => {
+//     switch(data.type) {
+//       case 'equipment_property':
+//         // 機器プロパティの通知を成形
+//         return {
+//           type: 'Equipment Property',
+//           // ...他の成形ロジック
+//         };
+//       case 'equipment_registration':
+//         // 機器登録情報の通知を成形
+//         return {
+//           type: 'Equipment Registration',
+//           // ...他の成形ロジック
+//         };
+//       case 'history_data':
+//         // 履歴データの通知を成形
+//         return {
+//           type: 'History Data',
+//           // ...他の成形ロジック
+//         };
+//       default:
+//         // 不明な通知タイプの場合は、エラーログを出力して、通知を無視するか、基本的な成形を提供します。
+//         console.error('Unknown notification type:', data.type);
+//         return null;  // または基本的な成形
+//     }
+//   };
 
-  const wsNotify = () => {
-    const KEY = def.NOTIFY_KEY;
-    redis.blpop(KEY, 0, (_err, data) => {
-      if (data) {
-        const dataObj = JSON.parse(String(data[1]));
-        // 通知データを成形します
-        const formattedNotification = formatNotification(dataObj);
-        if(formattedNotification) {  // 成形された通知が有効な場合のみ送信
-          // 成形された通知を全ての接続されているクライアントに送信します
-          wss.clients.forEach(client => {
-            if (client.readyState === websocket.OPEN) {
-              client.send(JSON.stringify(formattedNotification));
-            }
-          });
-        }
-        // 再帰的にwsNotifyを呼び出し、次の通知を待ちます
-        wsNotify();
-      }
-    });
-  };
+//   const wsNotify = () => {
+//     const KEY = def.NOTIFY_KEY;
+//     redis.blpop(KEY, 0, (_err, data) => {
+//       if (data) {
+//         const dataObj = JSON.parse(String(data[1]));
+//         // 通知データを成形します
+//         const formattedNotification = formatNotification(dataObj);
+//         if(formattedNotification) {  // 成形された通知が有効な場合のみ送信
+//           // 成形された通知を全ての接続されているクライアントに送信します
+//           wss.clients.forEach(client => {
+//             if (client.readyState === websocket.OPEN) {
+//               client.send(JSON.stringify(formattedNotification));
+//             }
+//           });
+//         }
+//         // 再帰的にwsNotifyを呼び出し、次の通知を待ちます
+//         wsNotify();
+//       }
+//     });
+//   };
 
-  wsNotify();  // 関数を初回呼び出し、Redis監視を開始します
+//   wsNotify();  // 関数を初回呼び出し、Redis監視を開始します
 
-  return wss;
-};
+//   return wss;
+// };
 
 
-const formatNotification = (data: any) => {
-  switch(data.event) {
-      case 'propertyChange':
-          // 機器プロパティの通知を成形
-          return {
-              type: 'Equipment Property Change',
-              equipmentType: data.type,
-              equipmentId: data.id,
-              changedProperties: data.properties,
-              // ...他の成形ロジック
-          };
-      case 'equipment_registration':
-          // 機器登録情報の通知を成形
-          // ...成形ロジック
-          break;
-      case 'history_data':
-          // 履歴データの通知を成形
-          // ...成形ロジック
-          break;
-      default:
-          // 不明な通知タイプの場合は、エラーログを出力して、通知を無視するか、基本的な成形を提供します。
-          console.error('Unknown notification event:', data.event);
-          return null;  // または基本的な成形
-  }
-};
+// const formatNotification = (data: any) => {
+//   switch(data.event) {
+//       case 'propertyChange':
+//           // 機器プロパティの通知を成形
+//           return {
+//               type: 'Equipment Property Change',
+//               equipmentType: data.type,
+//               equipmentId: data.id,
+//               changedProperties: data.properties,
+//               // ...他の成形ロジック
+//           };
+//       case 'equipment_registration':
+//           // 機器登録情報の通知を成形
+//           // ...成形ロジック
+//           break;
+//       case 'history_data':
+//           // 履歴データの通知を成形
+//           // ...成形ロジック
+//           break;
+//       default:
+//           // 不明な通知タイプの場合は、エラーログを出力して、通知を無視するか、基本的な成形を提供します。
+//           console.error('Unknown notification event:', data.event);
+//           return null;  // または基本的な成形
+//   }
+// };
 
-// ...残りのコード...
+// // ...残りのコード...
+
+
+
+// // 各通知タイプのデータを保存するための配列
+// let propertyNotifications = [];
+// let registrationNotifications = [];
+// let historyNotifications = [];
+
+// // Redisからデータを取得し処理する関数
+// const handleRedisData = (data: any) => {
+//     switch(data.event) {
+//         case 'propertyChange':
+//             // 機器プロパティの通知を処理
+//             propertyNotifications.push(data);
+//             break;
+//         case 'equipment_registration':
+//             // 機器登録情報の通知を処理
+//             registrationNotifications.push(data);
+//             break;
+//         case 'history_data':
+//             // 履歴データの通知を処理
+//             historyNotifications.push(data);
+//             break;
+//         default:
+//             // 不明な通知タイプの場合は、エラーログを出力
+//             console.error('Unknown notification event:', data.event);
+//     }
+// };
+
+// // Redisの状態変化通知キーを監視し、通知を処理する関数を呼び出す
+// const watchRedis = () => {
+//     const KEY = 'your_redis_key';
+//     // Redisのキーを監視...
+//     // ...
+//     // 仮のデータを使って関数を呼び出します
+//     let sampleData = {
+//         event: 'propertyChange',
+//         // ...他のデータフィールド...
+//     };
+//     handleRedisData(sampleData);
+// };
+
+// // Redis監視を開始
+// watchRedis();
