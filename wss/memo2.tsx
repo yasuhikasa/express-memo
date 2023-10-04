@@ -51,7 +51,48 @@
 
 
 
+// その２
 
+/**
+* Redisの状態変化通知キーを監視し、フィールドが追加されたらWebSocket通知を発信する
+*/
+// const wsNotify = () => {
+//   const KEY = def.NOTIFY_KEY;
+//   redis.blpop(KEY, 0, (_err, data) => {
+//       if (data) {
+//           const dataObj = JSON.parse(String(data[1]));
+//           logger.debug("BLPOP key: " + KEY + ", field: " + JSON.stringify(dataObj));
+//           // 認証済みの場合にWebSocket送信
+//           wsSend(dataObj);
+//       }
+//       // イベントループが完了した後、再度 wsNotify を実行
+//       setImmediate(wsNotify);
+//   });
+// }
+
+// wsNotify();
+
+
+
+
+// async/awaitのコードとsetImmediateを使用したコードの主な違いは、関数の実行の仕方とそのタイミングです。
+
+// async/awaitのコード:
+
+// while (true)によって、無限ループを作成します。
+// await new Promiseの部分で、redis.blpopの結果を待っています。
+// redis.blpopがデータを受信すると、resolve()が呼ばれ、次のループのイテレーションに進みます。
+// この方法は、イベントループをブロックしない非同期ループを作成します。Node.jsの非同期処理とイベントループの性質により、他のタスクがイベントキューにある場合、それらが実行されるのを待って、次のループのイテレーションに進みます。
+// setImmediateのコード:
+
+// redis.blpopの結果を待ちます。
+// データが受信されたら、その後でsetImmediate(wsNotify)を呼び出して、次のredis.blpopの呼び出しをスケジュールします。
+// setImmediateは、現在のイベントループイテレーションの後に指定された関数を実行するようにスケジュールします。
+// この方法も、イベントループをブロックせずに継続的にredis.blpopを実行します。
+// 両方の違い:
+
+// 実装の視点から見れば、async/awaitのコードは、明示的なループ構造を使用しています。一方、setImmediateのコードは、関数の呼び出しをスケジュールすることで、暗黙的なループ構造を使用しています。
+// 動作の視点から見れば、両方の方法は似たような動作をします。しかし、setImmediateは、他のタスクがイベントキューにある場合、それらが完了するのを確実に待ってから次の操作を実行します。
 
 
 
