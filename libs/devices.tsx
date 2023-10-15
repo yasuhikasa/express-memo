@@ -11,6 +11,7 @@ import * as ioRedis from "@/libs/redis"
 import * as def from "@/definitions/def"
 import { checkAirConPropertyRange } from "./devicesValueRange"
 import * as z from "zod"
+import * as controlDefs from "@/definitions/controlDefs"
 /**
 
 個別機器制御APIの型定義
@@ -168,7 +169,7 @@ return convertedControlCommand
 })
 }
 // commandListTableに適切なプロパティがなかった場合
-if (Object.keys(resultObj).length === 0 ) {
+if (Object.keys(resultObj).length === 0) {
 // データ取得失敗
 throw _.createError("Invalid data format", 3004, 500)
 }
@@ -497,11 +498,11 @@ try {
 // 要求用プロパティリストからコマンドを削除
 delete propertyList[command]
 
-// 機器詳細種別から機器の種類を判定
-const airConditioner = devType.substring(4, 6) === "30"
+// 機器詳細種別から機器種別を示す2バイト目の文字列を取得
+const devTypeHex = _.getDevTypeHex(devType)
 
-// 対象機器の種類がエアコンの場合
-if (airConditioner) {
+if (devTypeHex === controlDefs.AIR_CONDITIONER) {
+  // 対象機器の種類がエアコンの場合
   // エアコンプロパティ値域テーブルに値が存在しない場合取得する
   if (Object.keys(airconPropertyList).length <= 0) {
     try {
@@ -515,11 +516,13 @@ if (airConditioner) {
 
       // 要求をPUSH
       await redis.rpush(def.REQ_KEY, JSON.stringify(reqField))
+      logger.debug("RPUSH key: " + def.REQ_KEY + ", field: " + JSON.stringify(reqField))
 
       // 応答をPOP
       const resKey = def.RES_KEY + reqField.request_id
       const data = await ioRedis.blpopWithTimeout(resKey, def.TIMEOUT_20)
-      if (!data ) {
+      logger.debug("BLPOP key: " + resKey + ", field: " + JSON.stringify(data))
+      if (!data) {
         // データ取得失敗
         throw _.createError("Failed to get", 3002, 500)
       }
@@ -569,16 +572,21 @@ Object.assign(reqField.parameter.control_command_argument, propertyList)
 
 // 要求をPUSH
 await redis.rpush(def.REQ_KEY, JSON.stringify(reqField))
+logger.debug("RPUSH key: " + def.REQ_KEY + ", field: " + JSON.stringify(reqField))
 
 // 応答情報生成
 const resKey = def.RES_KEY + reqField.request_id
 // 応答をPOP
 let data = await ioRedis.blpopWithTimeout(resKey, def.TIMEOUT_10)
+logger.debug("BLPOP(1) key: " + resKey + ", field: " + JSON.stringify(data))
+// 1次応答エラー
 if (!data || data.status != "0") {
   return next(_.createError("Failed to set", 3010, 500))
 }
 // 応答をPOP
 data = await ioRedis.blpopWithTimeout(resKey, def.TIMEOUT_10)
+logger.debug("BLPOP(2) key: " + resKey + ", field: " + JSON.stringify(data))
+// 2次応答エラー
 if (!data || data.status != "0") {
   return next(_.createError("Failed to set", 3010, 500))
 }
