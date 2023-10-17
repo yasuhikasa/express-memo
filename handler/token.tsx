@@ -14,12 +14,12 @@ import * as def from "@/definitions/def"
 @returns {object} WebSocketのトークン情報
 **/
 const readContentsWsTokenFile = async () => {
-try {
-const hashData = await fs.readFile(def.CONTENTS_WS_TOKEN_HASH_FILE, "utf-8")
-return { err: null, hashData }
-} catch (err) {
-return { err: createError("contents ws token file read error", 3001), hashData: "" }
-}
+	try {
+		const hashData = await fs.readFile(def.CONTENTS_WS_TOKEN_HASH_FILE, "utf-8")
+		return { err: null, hashData }
+	} catch (err) {
+		return { err: createError("contents ws token file read error", 3001), hashData: "" }
+	}
 }
 /**
 
@@ -27,10 +27,10 @@ return { err: createError("contents ws token file read error", 3001), hashData: 
 @method /token/wsToken
 **/
 export const getContentsWsToken: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
-const { err, hashData } = await readContentsWsTokenFile()
-if (err) {
-return next(err)
-} else {
-return wrapResJson(req, res, { wsToken: hashData })
-}
+	const { err, hashData } = await readContentsWsTokenFile()
+	if (err) {
+		return next(err)
+	} else {
+		return wrapResJson(req, res, { wsToken: hashData })
+	}
 }

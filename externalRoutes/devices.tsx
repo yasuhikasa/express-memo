@@ -26,8 +26,8 @@ router.get("/devices/getCommand/:detailed_device_type", isStub ? stub.getDevices
 @method /devices/airConditioner/properties/def
 **/
 router.get(
-"/devices/airConditioner/properties/def",
-isStub ? stub.getAirConditionerProperties : devices.getAirConditionerProperties
+	"/devices/airConditioner/properties/def",
+	isStub ? stub.getAirConditionerProperties : devices.getAirConditionerProperties
 )
 /**
 
@@ -35,8 +35,8 @@ isStub ? stub.getAirConditionerProperties : devices.getAirConditionerProperties
 @method /devices/:detailed_device_type/properties/_any
 **/
 router.get(
-"/devices/:detailed_device_type/properties/_any",
-isStub ? stub.getDevicesProperties : devices.getDevicesProperties
+	"/devices/:detailed_device_type/properties/_any",
+	isStub ? stub.getDevicesProperties : devices.getDevicesProperties
 )
 /**
 
@@ -44,8 +44,8 @@ isStub ? stub.getDevicesProperties : devices.getDevicesProperties
 @method /devices/:type/properties/:propertyName
 **/
 router.get(
-"/devices/:type/properties/:propertyName",
-isStub ? devices.getDevicesPropertyName : devices.getDevicesPropertyName
+	"/devices/:type/properties/:propertyName",
+	isStub ? devices.getDevicesPropertyName : devices.getDevicesPropertyName
 )
 /**
 
@@ -53,7 +53,7 @@ isStub ? devices.getDevicesPropertyName : devices.getDevicesPropertyName
 @method /devices/:detailed_device_type/properties/_any
 **/
 router.put(
-"/devices/:detailed_device_type/properties/_any",
-isStub ? stub.putDevicesProperties : devices.putDevicesProperties
+	"/devices/:detailed_device_type/properties/_any",
+	isStub ? stub.putDevicesProperties : devices.putDevicesProperties
 )
 export default router

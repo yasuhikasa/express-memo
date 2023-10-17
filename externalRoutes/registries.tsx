@@ -14,8 +14,8 @@ const router = Router()
 @method /registries/actions/startRegistration
 **/
 router.post(
-"/registries/actions/startRegistration",
-isStub ? stub.postStartRegistration : registries.postStartRegistration
+	"/registries/actions/startRegistration",
+	isStub ? stub.postStartRegistration : registries.postStartRegistration
 )
 /**
 
@@ -23,7 +23,7 @@ isStub ? stub.postStartRegistration : registries.postStartRegistration
 @method /registries/actions/stopRegistration
 **/
 router.post(
-"/registries/actions/stopRegistration",
-isStub ? stub.postStopRegistration : registries.postStopRegistration
+	"/registries/actions/stopRegistration",
+	isStub ? stub.postStopRegistration : registries.postStopRegistration
 )
 export default router

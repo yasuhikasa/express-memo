@@ -6,15 +6,15 @@ const Joi = frisby.Joi;
 frisby.globalSetup(common.getGlobalSetupSettings());
 
 describe('トークン情報取得 [GET: /websocket/token]', () => {
-  const url = `/websocket/token`;
+	const url = `/websocket/token`;
 
-  {
-    it(`正常系`, () => {
-      return frisby
-        .get(url)
-        .expect('jsonTypes', "token", Joi.string().length(10).required())
-        .expect('status', 200);
-    });
-  }
+	{
+		it(`正常系`, () => {
+			return frisby
+				.get(url)
+				.expect('jsonTypes', "token", Joi.string().length(10).required())
+				.expect('status', 200);
+		});
+	}
 
 });
