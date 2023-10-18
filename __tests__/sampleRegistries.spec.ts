@@ -50,119 +50,136 @@
 // });
 
 
-import frisby from 'frisby';
-import * as yourModule from 'path-to-your-module'; 
+// import frisby from 'frisby';
+// import * as yourModule from 'path-to-your-module'; 
 
-beforeAll(() => {
-	jest.mock("tls", () => {
-		return {
-			TLSSocket: jest.fn().mockImplementation(() => {
-				return {
-					authorized: true,
-				};
-			}),
-		};
-	});
+// beforeAll(() => {
+// 	jest.mock("tls", () => {
+// 		return {
+// 			TLSSocket: jest.fn().mockImplementation(() => {
+// 				return {
+// 					authorized: true,
+// 				};
+// 			}),
+// 		};
+// 	});
 
-	jest.mock("@/libs/digestAuth", () => {
-		return () => (req, res, next) => next();
-	});
+// 	jest.mock("@/libs/digestAuth", () => {
+// 		return () => (req, res, next) => next();
+// 	});
 	
 
-	const mockChange = jest.fn();
-	yourModule.change = mockChange;
-	mockChange.mockReturnValue({ activation: true, organizationalUnitName: "HX_S" });
-});
+// 	const mockChange = jest.fn();
+// 	yourModule.change = mockChange;
+// 	mockChange.mockReturnValue({ activation: true, organizationalUnitName: "HX_S" });
+// });
 
-
-describe('機器登録', () => {
-	it('機器登録開始', async () =>
-	{
-		await frisby
-			.get('http://localhost:443/api/v1/controllers/gw/devices/airConditioner/properties/def')
-			.expect('status', 200).promise();
-
-	});
-
-	it('機器登録中止', async () => {
-		await frisby
-			.post('http://localhost:443/api/v1/controllers/gw/registries/actions/stopRegistration')
-			.expect('status', 200).promise();
-        
-	});
-});
-
-
-
-
-
-
-const mockAuthMiddleware = jest.fn((req, res, next) => next());
-authModule.authMiddleware = mockAuthMiddleware;
-
-
-import nock from 'nock';
-
-beforeAll(() => {
-	// digestAuthがリクエストを送る認証サーバのURLをモック
-	nock('https://authserver.com')
-		.post('/digest-auth-endpoint')  // このエンドポイントにPOSTリクエストが来たら
-		.reply(200, { status: 'authenticated' });  // このレスポンスを返す
-});
-
-
-
-
-// import frisby from 'frisby';
-// import * as ioRedis from "@/libs/redis";
 
 // describe('機器登録', () => {
+// 	it('機器登録開始', async () =>
+// 	{
+// 		await frisby
+// 			.get('http://localhost:443/api/v1/controllers/gw/devices/airConditioner/properties/def')
+// 			.expect('status', 200).promise();
 
-// 	beforeAll(async () => {
-// 		// 必要なセットアップ処理
-// 	});
-
-// 	afterAll(async () => {
-// 		// クリーンアップ処理
-// 	});
-
-// 	it('機器登録開始', async () => {
-// 		const res = await frisby
-// 			.post('http://localhost:443/api/v1/controllers/gw/registries/actions/startRegistration')
-// 			.expect('status', 200);
-        
-// 		expect(res.json.result).toBe('some_expected_value'); // 応答の具体的な値に基づいて修正してください
 // 	});
 
 // 	it('機器登録中止', async () => {
-// 		const res = await frisby
+// 		await frisby
 // 			.post('http://localhost:443/api/v1/controllers/gw/registries/actions/stopRegistration')
-// 			.expect('status', 200);
+// 			.expect('status', 200).promise();
         
-// 		expect(res.json.result).toBe('some_expected_value'); // 応答の具体的な値に基づいて修正してください
 // 	});
-
-// 	it('Redisが応答しない場合のエラー', async () => {
-// 		const redis = ioRedis.getRedisInstance();
-// 		// 一時的にRedisの接続を中断するなどの方法でテストを実行してください
-// 		// ...
-
-// 		const res = await frisby
-// 			.post('http://localhost:443/api/v1/controllers/gw/registries/actions/startRegistration')
-// 			.expect('status', 500);
-        
-// 		expect(res.json.message).toBe('Failed to start registration');
-// 	});
-
-// 	it('statusが応答に含まれていない場合のエラー', async () => {
-// 		// 応答データを書き換えるか、モックを使用してテストを実行してください
-// 		// ...
-
-// 		const res = await frisby
-// 			.post('http://localhost:443/api/v1/controllers/gw/registries/actions/startRegistration')
-// 			.expect('status', 500);
-        
-// 		expect(res.json.message).toBe('Failed to start registration');
-// 	});
-
 // });
+
+
+
+
+
+
+// const mockAuthMiddleware = jest.fn((req, res, next) => next());
+// authModule.authMiddleware = mockAuthMiddleware;
+
+
+// import nock from 'nock';
+
+// beforeAll(() => {
+// 	// digestAuthがリクエストを送る認証サーバのURLをモック
+// 	nock('https://authserver.com')
+// 		.post('/digest-auth-endpoint')  // このエンドポイントにPOSTリクエストが来たら
+// 		.reply(200, { status: 'authenticated' });  // このレスポンスを返す
+// });
+
+
+
+
+import frisby from 'frisby';
+import * as ioRedis from "@/libs/redis";
+
+describe('機器登録', () => {
+
+	beforeAll(async () => {
+		// 必要なセットアップ処理
+	});
+
+	afterAll(async () => {
+		// クリーンアップ処理
+	});
+
+	it('機器登録開始', async () => {
+		const res = await frisby
+			.post('http://localhost:443/api/v1/controllers/gw/registries/actions/startRegistration')
+			.expect('status', 200);
+
+		expect(res.json.result).toBe('some_expected_value'); // 応答の具体的な値に基づいて修正してください
+	});
+
+	it('機器登録中止', async () => {
+		const res = await frisby
+			.post('http://localhost:443/api/v1/controllers/gw/registries/actions/stopRegistration')
+			.expect('status', 200);
+
+		expect(res.json.result).toBe('some_expected_value'); // 応答の具体的な値に基づいて修正してください
+	});
+
+	describe('Error scenarios', () => {
+		beforeEach(() => {
+			jest.resetModules(); // エラーシナリオのテストケースの前にモジュールの状態をリセット
+		});
+
+		it('Redisが応答しない場合のエラー', async () => {
+			jest.doMock('@/libs/redis', () => ({
+				getRedisInstance: jest.fn().mockImplementation(() => {
+					throw new Error("Redis connection error");
+				}),
+			}));
+
+			const res = await frisby
+				.post('http://localhost:443/api/v1/controllers/gw/registries/actions/startRegistration')
+				.expect('status', 500);
+
+			expect(res.json.message).toBe('Failed to start registration');
+		});
+	});
+
+	it('statusが応答に含まれていない場合のエラー', async () => {
+    // Redisの応答をモックして、statusプロパティを含まないデータを返すように設定
+    const mockResponseWithoutStatus = { someOtherProperty: "value" }; // 実際のデータ構造に応じて修正してください
+
+    jest.doMock('@/libs/redis', () => ({
+        getRedisInstance: jest.fn().mockImplementation(() => ({
+            rpush: jest.fn(),
+            blpopWithTimeout: jest.fn().mockResolvedValue(mockResponseWithoutStatus)
+        }))
+    }));
+
+    const res = await frisby
+        .post('http://localhost:443/api/v1/controllers/gw/registries/actions/startRegistration')
+        .expect('status', 500);
+
+    expect(res.json.message).toBe('Failed to start registration');
+});
+
+	});
+
+});
