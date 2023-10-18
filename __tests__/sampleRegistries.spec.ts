@@ -51,6 +51,29 @@
 
 
 import frisby from 'frisby';
+import * as yourModule from 'path-to-your-module'; 
+
+beforeAll(() => {
+	jest.mock("tls", () => {
+		return {
+			TLSSocket: jest.fn().mockImplementation(() => {
+				return {
+					authorized: true,
+				};
+			}),
+		};
+	});
+
+	jest.mock("@/libs/digestAuth", () => {
+		return () => (req, res, next) => next();
+	});
+	
+
+	const mockChange = jest.fn();
+	yourModule.change = mockChange;
+	mockChange.mockReturnValue({ activation: true, organizationalUnitName: "HX_S" });
+});
+
 
 describe('機器登録', () => {
 	it('機器登録開始', async () =>
@@ -67,4 +90,22 @@ describe('機器登録', () => {
 			.expect('status', 200).promise();
         
 	});
+});
+
+
+
+
+
+
+const mockAuthMiddleware = jest.fn((req, res, next) => next());
+authModule.authMiddleware = mockAuthMiddleware;
+
+
+import nock from 'nock';
+
+beforeAll(() => {
+	// digestAuthがリクエストを送る認証サーバのURLをモック
+	nock('https://authserver.com')
+		.post('/digest-auth-endpoint')  // このエンドポイントにPOSTリクエストが来たら
+		.reply(200, { status: 'authenticated' });  // このレスポンスを返す
 });
