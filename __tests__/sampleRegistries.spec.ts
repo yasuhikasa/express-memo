@@ -109,3 +109,60 @@ beforeAll(() => {
 		.post('/digest-auth-endpoint')  // このエンドポイントにPOSTリクエストが来たら
 		.reply(200, { status: 'authenticated' });  // このレスポンスを返す
 });
+
+
+
+
+// import frisby from 'frisby';
+// import * as ioRedis from "@/libs/redis";
+
+// describe('機器登録', () => {
+
+// 	beforeAll(async () => {
+// 		// 必要なセットアップ処理
+// 	});
+
+// 	afterAll(async () => {
+// 		// クリーンアップ処理
+// 	});
+
+// 	it('機器登録開始', async () => {
+// 		const res = await frisby
+// 			.post('http://localhost:443/api/v1/controllers/gw/registries/actions/startRegistration')
+// 			.expect('status', 200);
+        
+// 		expect(res.json.result).toBe('some_expected_value'); // 応答の具体的な値に基づいて修正してください
+// 	});
+
+// 	it('機器登録中止', async () => {
+// 		const res = await frisby
+// 			.post('http://localhost:443/api/v1/controllers/gw/registries/actions/stopRegistration')
+// 			.expect('status', 200);
+        
+// 		expect(res.json.result).toBe('some_expected_value'); // 応答の具体的な値に基づいて修正してください
+// 	});
+
+// 	it('Redisが応答しない場合のエラー', async () => {
+// 		const redis = ioRedis.getRedisInstance();
+// 		// 一時的にRedisの接続を中断するなどの方法でテストを実行してください
+// 		// ...
+
+// 		const res = await frisby
+// 			.post('http://localhost:443/api/v1/controllers/gw/registries/actions/startRegistration')
+// 			.expect('status', 500);
+        
+// 		expect(res.json.message).toBe('Failed to start registration');
+// 	});
+
+// 	it('statusが応答に含まれていない場合のエラー', async () => {
+// 		// 応答データを書き換えるか、モックを使用してテストを実行してください
+// 		// ...
+
+// 		const res = await frisby
+// 			.post('http://localhost:443/api/v1/controllers/gw/registries/actions/startRegistration')
+// 			.expect('status', 500);
+        
+// 		expect(res.json.message).toBe('Failed to start registration');
+// 	});
+
+// });
