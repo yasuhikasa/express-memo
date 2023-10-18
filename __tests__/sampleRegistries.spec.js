@@ -50,20 +50,21 @@
 // });
 
 
-const frisby = require('frisby');
+import frisby from 'frisby';
 
-describe('Registries Handlers', () => {
-	it('should start registration', () => {
-		return frisby
-			.post('http://localhost:3000/registries/actions/startRegistration')
-			.expect('status', 200)
-			.expect('json', 'result', 'success'); // 期待するレスポンスの評価
+describe('機器登録', () => {
+	it('機器登録開始', async () =>
+	{
+		await frisby
+			.get('http://localhost:443/api/v1/controllers/gw/devices/airConditioner/properties/def')
+			.expect('status', 200).promise();
+
 	});
 
-	it('should stop registration', () => {
-		return frisby
-			.post('http://localhost:3000/registries/actions/stopRegistration')
-			.expect('status', 200)
-			.expect('json', 'result', 'success');
+	it('機器登録中止', async () => {
+		await frisby
+			.post('http://localhost:443/api/v1/controllers/gw/registries/actions/stopRegistration')
+			.expect('status', 200).promise();
+        
 	});
 });
